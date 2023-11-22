@@ -8,6 +8,11 @@
 , libcxxabi
 , libGL
 , gcc7
+, fontconfig
+, freetype
+, libICE
+, libSM
+, libXrender
 }:
 
 stdenv.mkDerivation rec {
@@ -20,6 +25,12 @@ stdenv.mkDerivation rec {
     libcxxabi
     libGL
     gcc7.cc.lib
+
+    fontconfig
+    freetype
+    libICE
+    libSM
+    libXrender
   ];
 
   # yes, the below download function is an absolute mess.
