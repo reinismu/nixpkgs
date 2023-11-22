@@ -13,6 +13,8 @@
 , libICE
 , libSM
 , libXrender
+, glib
+, dbus
 }:
 
 stdenv.mkDerivation rec {
@@ -31,6 +33,8 @@ stdenv.mkDerivation rec {
     libICE
     libSM
     libXrender
+    glib
+    dbus
   ];
 
   # yes, the below download function is an absolute mess.
