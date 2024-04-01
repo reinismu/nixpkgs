@@ -8,11 +8,18 @@
 , libcxxabi
 , libGL
 , gcc7
+, fontconfig
+, freetype
+, libICE
+, libSM
+, libXrender
+, glib
+, dbus
 }:
 
 stdenv.mkDerivation rec {
   pname = "blackmagic-desktop-video";
-  version = "12.5a15";
+  version = "12.7.1a1";
 
   buildInputs = [
     autoPatchelfHook
@@ -20,6 +27,14 @@ stdenv.mkDerivation rec {
     libcxxabi
     libGL
     gcc7.cc.lib
+
+    fontconfig
+    freetype
+    libICE
+    libSM
+    libXrender
+    glib
+    dbus
   ];
 
   # yes, the below download function is an absolute mess.
@@ -28,7 +43,7 @@ stdenv.mkDerivation rec {
     rec {
       outputHashMode = "recursive";
       outputHashAlgo = "sha256";
-      outputHash = "sha256-ss7Ab5dy7cmXp9LBirFXMeGY4ZbYHvWnXmYvNeBq0RY=";
+      outputHash = "sha256-R/YLb8nVFo9nvpRQ7cZ6S/yI7mDCc3qZM0E/4ygIeQI";
 
       impureEnvVars = lib.fetchers.proxyImpureEnvVars;
 
@@ -38,9 +53,9 @@ stdenv.mkDerivation rec {
       SSL_CERT_FILE = "${cacert}/etc/ssl/certs/ca-bundle.crt";
 
       # from the URL that the POST happens to, see browser console
-      DOWNLOADID = "fecacc0f9b2f4c2e8bf2863e9e26c8e1";
+      DOWNLOADID = "873e0f71e6bb4f9992ee372b1aaac8dc";
       # from the URL the download page where you click the "only download" button is at
-      REFERID = "052d944af6744608b27da496dfc4396d";
+      REFERID = "f3991269fb49440d9049fd5c41f44679";
       SITEURL = "https://www.blackmagicdesign.com/api/register/us/download/${DOWNLOADID}";
 
       USERAGENT = builtins.concatStringsSep " " [
@@ -75,7 +90,7 @@ stdenv.mkDerivation rec {
   '';
 
   postUnpack = ''
-    tar xf Blackmagic_Desktop_Video_Linux_${lib.versions.majorMinor version}/other/${stdenv.hostPlatform.uname.processor}/desktopvideo-${version}-${stdenv.hostPlatform.uname.processor}.tar.gz
+    tar xf Blackmagic_Desktop_Video_Linux_${lib.head (lib.splitString "a" version)}/other/${stdenv.hostPlatform.uname.processor}/desktopvideo-${version}-${stdenv.hostPlatform.uname.processor}.tar.gz
     unpacked=$NIX_BUILD_TOP/desktopvideo-${version}-${stdenv.hostPlatform.uname.processor}
   '';
 
@@ -86,7 +101,7 @@ stdenv.mkDerivation rec {
     cp -r $unpacked/usr/share/doc/desktopvideo $out/share/doc
     cp $unpacked/usr/lib/*.so $out/lib
     cp $unpacked/usr/lib/systemd/system/DesktopVideoHelper.service $out/lib/systemd/system
-    cp $unpacked/usr/lib/blackmagic/DesktopVideo/DesktopVideoHelper $out/bin/
+    cp -r $unpacked/usr/lib/blackmagic/DesktopVideo/* $out/bin/
 
     substituteInPlace $out/lib/systemd/system/DesktopVideoHelper.service --replace "/usr/lib/blackmagic/DesktopVideo/DesktopVideoHelper" "$out/bin/DesktopVideoHelper"
 
