@@ -7,6 +7,13 @@
 , libcxx
 , libGL
 , gcc7
+, fontconfig
+, freetype
+, libICE
+, libSM
+, libXrender
+, glib
+, dbus
 }:
 
 stdenv.mkDerivation rec {
@@ -18,6 +25,14 @@ stdenv.mkDerivation rec {
     libcxx
     libGL
     gcc7.cc.lib
+
+    fontconfig
+    freetype
+    libICE
+    libSM
+    libXrender
+    glib
+    dbus
   ];
 
   # yes, the below download function is an absolute mess.
@@ -86,7 +101,7 @@ stdenv.mkDerivation rec {
     cp -r $unpacked/usr/share/doc/desktopvideo $out/share/doc
     cp $unpacked/usr/lib/*.so $out/lib
     cp $unpacked/usr/lib/systemd/system/DesktopVideoHelper.service $out/lib/systemd/system
-    cp $unpacked/usr/lib/blackmagic/DesktopVideo/DesktopVideoHelper $out/bin/
+    cp -r $unpacked/usr/lib/blackmagic/DesktopVideo/* $out/bin/
 
     substituteInPlace $out/lib/systemd/system/DesktopVideoHelper.service --replace "/usr/lib/blackmagic/DesktopVideo/DesktopVideoHelper" "$out/bin/DesktopVideoHelper"
 
